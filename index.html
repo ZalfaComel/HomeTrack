@@ -1104,100 +1104,184 @@
         });
 
         // Music Player Functionality
-        const songItems = document.querySelectorAll('.song-item');
-        const playButtons = document.querySelectorAll('.play-btn');
-        const audioPlayer = document.getElementById('audioPlayer');
+       const songItems = document.querySelectorAll('.song-item');
+const playButtons = document.querySelectorAll('.play-btn');
+const audioPlayer = document.getElementById('audioPlayer');
+
+// Audio sources (using free sample audio from SoundHelix)
+const audioSources = {
+    'audio1': 'audio/SHG.mp3',
+    'audio2': 'audio/lagu2.mp3',
+    'audio3': 'audio/lagu3.mp3'
+};
+
+// Fungsi untuk memuat dan memainkan audio
+function loadAndPlayAudio(audioId, songElement) {
+    if (audioSources[audioId]) {
+        // Simpan waktu pemutaran saat ini jika ada
+        const currentTime = audioPlayer.currentTime;
+        const wasPlaying = !audioPlayer.paused;
         
-        // Audio sources (using free sample audio from SoundHelix)
-        const audioSources = {
-            'audio1': 'audio/SHG.mp3',
-            'audio2': 'audio/lagu2.mp3',
-            'audio3': 'audio/lagu3.mp3'
-        };
+        // Set source baru
+        audioPlayer.src = audioSources[audioId];
+        
+        // Load audio baru
+        audioPlayer.load();
+        
+        // Tampilkan controls audio
+        audioPlayer.style.display = 'block';
+        
+        // Coba untuk memulai pemutaran
+        audioPlayer.play().then(() => {
+            // Update button icon
+            if (songElement) {
+                const playBtn = songElement.querySelector('.play-btn i');
+                playBtn.className = 'fas fa-pause';
+            }
+        }).catch(error => {
+            console.log("Autoplay mungkin diblok:", error);
+            // Tetap tampilkan controls meski autoplay diblok
+            audioPlayer.controls = true;
+        });
+    }
+}
 
-        songItems.forEach(item => {
-            item.addEventListener('click', function() {
-                songItems.forEach(song => song.classList.remove('active'));
-                this.classList.add('active');
-                
-                const audioId = this.getAttribute('data-audio');
-                if (audioSources[audioId]) {
-                    audioPlayer.src = audioSources[audioId];
-                    audioPlayer.play();
-                    
-                    // Update play button icon
-                    const playBtn = this.querySelector('.play-btn i');
-                    playBtn.className = 'fas fa-pause';
-                    
-                    // Reset other play buttons
-                    document.querySelectorAll('.song-item:not(.active) .play-btn i').forEach(icon => {
-                        icon.className = 'fas fa-play';
-                    });
-                }
+songItems.forEach(item => {
+    item.addEventListener('click', function() {
+        // Update active class
+        songItems.forEach(song => song.classList.remove('active'));
+        this.classList.add('active');
+        
+        const audioId = this.getAttribute('data-audio');
+        
+        // Load dan play audio
+        loadAndPlayAudio(audioId, this);
+        
+        // Update semua play buttons
+        document.querySelectorAll('.song-item .play-btn i').forEach(icon => {
+            icon.className = 'fas fa-play';
+        });
+        
+        // Update play button untuk lagu aktif
+        const playBtn = this.querySelector('.play-btn i');
+        playBtn.className = 'fas fa-pause';
+    });
+});
+
+playButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const songItem = this.closest('.song-item');
+        const isActive = songItem.classList.contains('active');
+        
+        if (!isActive) {
+            // Aktifkan lagu ini
+            songItems.forEach(item => item.classList.remove('active'));
+            songItem.classList.add('active');
+            
+            const audioId = songItem.getAttribute('data-audio');
+            loadAndPlayAudio(audioId, songItem);
+        } else {
+            // Jika sudah aktif, toggle play/pause
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                this.querySelector('i').className = 'fas fa-pause';
+            } else {
+                audioPlayer.pause();
+                this.querySelector('i').className = 'fas fa-play';
+            }
+        }
+    });
+});
+
+// Update play button ketika audio diputar/dijeda
+audioPlayer.addEventListener('play', function() {
+    const activeSong = document.querySelector('.song-item.active');
+    if (activeSong) {
+        activeSong.querySelector('.play-btn i').className = 'fas fa-pause';
+    }
+});
+
+audioPlayer.addEventListener('pause', function() {
+    const activeSong = document.querySelector('.song-item.active');
+    if (activeSong) {
+        activeSong.querySelector('.play-btn i').className = 'fas fa-play';
+    }
+});
+
+// Tampilkan controls audio ketika sudah siap
+audioPlayer.addEventListener('loadeddata', function() {
+    // Pastikan controls selalu tampil
+    audioPlayer.controls = true;
+    audioPlayer.style.display = 'block';
+});
+
+// Handle error loading audio
+audioPlayer.addEventListener('error', function(e) {
+    console.error('Error loading audio:', e);
+    
+    // Fallback ke audio online jika file lokal tidak ada
+    const fallbackSources = {
+        'audio1': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+        'audio2': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+        'audio3': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'
+    };
+    
+    const activeSong = document.querySelector('.song-item.active');
+    if (activeSong) {
+        const audioId = activeSong.getAttribute('data-audio');
+        if (fallbackSources[audioId]) {
+            audioPlayer.src = fallbackSources[audioId];
+            audioPlayer.load();
+            audioPlayer.play().catch(() => {
+                // Tetap tampilkan controls meski tidak bisa autoplay
+                audioPlayer.controls = true;
             });
-        });
+        }
+    }
+});
 
-        playButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const songItem = this.closest('.song-item');
-                const isActive = songItem.classList.contains('active');
-                
-                if (!isActive) {
-                    songItems.forEach(item => item.classList.remove('active'));
-                    songItem.classList.add('active');
-                    
-                    const audioId = songItem.getAttribute('data-audio');
-                    if (audioSources[audioId]) {
-                        audioPlayer.src = audioSources[audioId];
-                    }
-                }
-                
-                if (audioPlayer.paused) {
-                    audioPlayer.play();
-                    this.querySelector('i').className = 'fas fa-pause';
-                } else {
-                    audioPlayer.pause();
-                    this.querySelector('i').className = 'fas fa-play';
-                }
+// Smooth scrolling for navigation links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        if (this.getAttribute('href') === '#') return;
+        
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        
+        if (targetElement) {
+            window.scrollTo({
+                top: targetElement.offsetTop - 80,
+                behavior: 'smooth'
             });
-        });
-
-        // Update play button when audio is playing/paused
-        audioPlayer.addEventListener('play', function() {
-            document.querySelector('.song-item.active .play-btn i').className = 'fas fa-pause';
-        });
-
-        audioPlayer.addEventListener('pause', function() {
-            document.querySelector('.song-item.active .play-btn i').className = 'fas fa-play';
-        });
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                if (this.getAttribute('href') === '#') return;
-                
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
-                
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                    
-                    // Update active nav link
-                    document.querySelectorAll('.nav-menu a').forEach(link => {
-                        link.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                }
+            
+            // Update active nav link
+            document.querySelectorAll('.nav-menu a').forEach(link => {
+                link.classList.remove('active');
             });
-        });
+            this.classList.add('active');
+        }
+    });
+});
 
-        // Initialize with first song playing
+// Inisialisasi dengan audio pertama
+window.addEventListener('load', function() {
+    // Pastikan audio pertama aktif
+    const firstSong = document.querySelector('.song-item[data-audio="audio1"]');
+    if (firstSong) {
+        songItems.forEach(song => song.classList.remove('active'));
+        firstSong.classList.add('active');
+        
+        // Load audio pertama
         audioPlayer.src = audioSources['audio1'];
+        audioPlayer.load();
+        
+        // Tampilkan controls
+        audioPlayer.controls = true;
+        audioPlayer.style.display = 'block';
+    }
+});
     </script>
 </body>
 </html>
