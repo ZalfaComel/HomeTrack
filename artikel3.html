@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOMETRACK - Monitoring Kesehatan Mental Mahasiswa Rantau</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --accent: #20a39e;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --warning: #ff9f1c;
+            --danger: #e63946;
+            --success: #2a9d8f;
+        }
+        
+        body {
+            background-color: rgba(173, 195, 223, 0.4);
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 25px;
+        }
+        
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 8px 0;
+            position: relative;
+        }
+        
+        .nav-menu a:hover {
+            color: var(--accent);
+        }
+        
+        .nav-menu a.active {
+            color: var(--accent);
+        }
+        
+        .nav-menu a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--accent);
+            border-radius: 2px;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .features {
+            padding: 4rem 0;
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--secondary);
+            font-size: 2rem;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent);
+            border-radius: 2px;
+        }
+        .cta-button{
+                display:none;
+            }
+        @media (max-width: 992px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            
+            }
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .logo {
+                justify-content: center;
+            }
+            .cta-button {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(32, 163, 158, 0.3);
+        }
+        
+        .cta-button:hover {
+            color: white;
+            background-color: var(--secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(32, 163, 158, 0.4);
+        }
+        }
+        .card {
+            border:none !important;
+        }
+        
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-home logo-icon"></i>
+                    <h1>HOME<span>TRACK</span></h1>
+                </div>
+                <nav class="nav-menu">
+                    <a href="index.html#education">Kembali</a>
+                </nav>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+    <h2 class="section-title mt-5 fw-bold">judul Artikel</h2>
+    <div class="features-grid">
+        <div class="card p-5">
+            <img class="image-artikel w-75 m-auto mb-5" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8u3GKfC0CKAGVw6pF7OhB3TrtwkAlR3epig&s" alt="">
+        <p class="px-4" style="text-align:justify">
+            <span style="color: #166088;" class="fs-1 fw-bold">L</span>orem ipsum dolor sit amet consectetur adipisicing elit. Impedit atque nam accusamus dolorem, autem laborum neque dicta cumque quos illo blanditiis suscipit. Quaerat nemo voluptate officiis veritatis voluptatem nostrum illum officia eius, dolores atque similique, sit iusto consectetur adipisci vel doloremque aspernatur consequatur laborum a deleniti maxime? Quis id fugit voluptatem. Qui, quasi perspiciatis enim iusto illo aliquam recusandae doloremque deserunt sunt ab aspernatur modi sit voluptatem veniam saepe quia reprehenderit omnis consectetur architecto molestiae numquam error? Minus, earum blanditiis. Necessitatibus eveniet placeat itaque non sequi aperiam exercitationem eaque labore perspiciatis eligendi quam odio eos ducimus reiciendis dolorem, laborum cumque.
+        </p>
+        <a href="index.html#education" class="cta-button w-50 mx-auto text-center">Kembali</a>
+
+    </div>
+</body>
+</html>
